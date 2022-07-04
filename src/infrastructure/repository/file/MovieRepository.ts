@@ -1,9 +1,11 @@
-import {MoviesRepositoryInterface} from "../../../application/repository/MoviesRepositoryInterface";
-import {Movie} from "../../../domain/entity/Movie";
+import { MoviesRepositoryInterface } from "../../../application/repository/MoviesRepositoryInterface";
+import { Movie } from "../../../domain/entity/Movie";
 import fs from "fs";
+import { AddMovieDTO } from "../../../application/dto/AddMovieDTO";
+import { instanceToPlain } from "class-transformer";
 
 export default class MoviesJSONRepository implements MoviesRepositoryInterface {
-    private filePath: string;
+    private readonly filePath: string;
 
     constructor(filePath: string) {
         this.filePath = filePath;
@@ -30,9 +32,9 @@ export default class MoviesJSONRepository implements MoviesRepositoryInterface {
         return lastMovieId;
     }
 
-    async save(movie: Movie): Promise<boolean> {
+    async save(addMovieDTO: AddMovieDTO): Promise<boolean> {
         let parsedMoviesJson = await this.getFileJson();
-        parsedMoviesJson.movies.push(movie);
+        parsedMoviesJson.movies.push(instanceToPlain(addMovieDTO));
         const updatedMoviesBuffer = JSON.stringify(parsedMoviesJson);
         await fs.promises.writeFile(this.filePath, updatedMoviesBuffer);
 
