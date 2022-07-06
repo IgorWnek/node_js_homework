@@ -1,11 +1,11 @@
 import {AddMovieUseCaseInterface} from "./AddMovieUseCaseInterface";
-import {MoviesRepositoryInterface} from "../repository/MoviesRepositoryInterface";
+import {MovieRepositoryInterface} from "../repository/MovieRepositoryInterface";
 import {AddMovieDTO} from "../dto/AddMovieDTO";
 
 export class AddMovieUseCase implements AddMovieUseCaseInterface {
-    movieRepository: MoviesRepositoryInterface
+    movieRepository: MovieRepositoryInterface
 
-    constructor(movieRepository: MoviesRepositoryInterface) {
+    constructor(movieRepository: MovieRepositoryInterface) {
         this.movieRepository = movieRepository
     }
 

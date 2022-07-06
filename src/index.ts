@@ -5,7 +5,7 @@ import helmet from 'helmet';
 import dotenv from 'dotenv';
 import MoviesRouter from "./presentation/http/rest-api/v1/MoviesRouter";
 import {AddMovieUseCase} from "./application/use-case/AddMovieUseCase";
-import MoviesJSONRepository from "./infrastructure/repository/file/MovieRepository";
+import MoviesJSONRepository from "./infrastructure/repository/file/MovieJSONRepository";
 
 dotenv.config();
 

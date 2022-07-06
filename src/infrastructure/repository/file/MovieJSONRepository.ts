@@ -1,10 +1,10 @@
-import { MoviesRepositoryInterface } from "../../../application/repository/MoviesRepositoryInterface";
+import { MovieRepositoryInterface } from "../../../application/repository/MovieRepositoryInterface";
 import { Movie } from "../../../domain/entity/Movie";
 import fs from "fs";
 import { AddMovieDTO } from "../../../application/dto/AddMovieDTO";
 import { instanceToPlain } from "class-transformer";
 
-export default class MoviesJSONRepository implements MoviesRepositoryInterface {
+export default class MoviesJSONRepository implements MovieRepositoryInterface {
     private readonly filePath: string;
 
     constructor(filePath: string) {
