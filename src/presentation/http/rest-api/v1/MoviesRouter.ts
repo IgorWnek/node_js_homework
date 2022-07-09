@@ -23,10 +23,15 @@ export default function MoviesRouter (
                 }
 
                 const addMovieDTO = new AddMovieDTO(req.body);
-                await addMovieUseCase.execute(addMovieDTO)
+                const createdMovieId = await addMovieUseCase.execute(addMovieDTO);
                 res.statusCode = 201
-                res.json({ message: "Created" })
-            } catch (err: any) {
+                res.json(
+                    {
+                        message: "Created",
+                        movieId: createdMovieId
+                    }
+                )
+            } catch (e: any) {
                 res.status(500).send({ message: 'Error while saving data' })
             }
         }

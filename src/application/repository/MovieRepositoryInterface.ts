@@ -3,6 +3,5 @@ import { AddMovieDTO } from "../dto/AddMovieDTO";
 
 export interface MovieRepositoryInterface {
     fetchAll(): Promise<Array<Movie>>;
-    findLastMovieId(): Promise<number>;
-    save(addMovieDTO: AddMovieDTO): Promise<boolean>;
+    save(addMovieDTO: AddMovieDTO): Promise<number>;
 }

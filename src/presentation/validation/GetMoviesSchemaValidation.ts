@@ -23,6 +23,34 @@ export const createMovieValidationSchema: Schema = {
         isString: { errorMessage: 'Director field must be a string value' },
         isLength: { options: { max: 255 }, errorMessage: 'Director field can have max 255 signs length'}
     },
+    genres: {
+        in: ['body'],
+        exists: { errorMessage: 'Genres is required field' },
+        isArray: { options: { min: 1 }, errorMessage: 'At least one genre must be specified' },
+        isIn: { options: [
+            "Comedy",
+            "Fantasy",
+            "Crime",
+            "Drama",
+            "Music",
+            "Adventure",
+            "History",
+            "Thriller",
+            "Animation",
+            "Family",
+            "Mystery",
+            "Biography",
+            "Action",
+            "Film-Noir",
+            "Romance",
+            "Sci-Fi",
+            "War",
+            "Western",
+            "Horror",
+            "Musical",
+            "Sport"
+        ] }
+    },
     actors: {
         in: ['body'],
         isString: { errorMessage: 'Actors field must be a string value' },

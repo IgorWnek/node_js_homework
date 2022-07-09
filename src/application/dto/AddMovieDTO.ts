@@ -3,6 +3,7 @@ export interface AddMovieDTOPropsInterface {
     year: number;
     runtime: number;
     director: string;
+    genres: string[];
     actors?: string;
     plot?: string;
     posterUrl?: string;
@@ -13,6 +14,7 @@ export class AddMovieDTO {
     public year: number;
     public runtime: number;
     public director: string;
+    public genres: string[];
     public actors?: string;
     public plot?: string;
     public posterUrl?: string;
@@ -22,6 +24,7 @@ export class AddMovieDTO {
         this.year = props.year;
         this.runtime = props.runtime;
         this.director = props.director;
+        this.genres = props.genres;
         if (props.actors) {
             this.actors = props.actors;
         }

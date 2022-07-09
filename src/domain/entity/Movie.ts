@@ -1,33 +1,43 @@
-import {Genre} from "./Genre";
-
 export interface CreateMoviePropertiesInterface {
     id: number;
     title: string;
     year: number;
     runtime: number;
     director: string;
-    genres: Array<Genre>;
+    genres: string[];
+    actors?: string;
+    plot?: string;
+    posterUrl?: string;
 }
 
 export class Movie {
     private id: number;
     private title: string;
-    private year: number;
-    private runtime: number;
+    private year: string;
+    private runtime: string;
     private director: string;
-    private genres: Array<Genre>;
+    private genres: string[];
 
     private actors?: string;
     private plot?: string;
     private posterUrl?: string;
 
-    constructor({id, title, year, runtime, director, genres}: CreateMoviePropertiesInterface) {
-        this.id = id;
-        this.title = title;
-        this.year = year;
-        this.runtime = runtime;
-        this.director = director;
-        this.genres = genres;
+    constructor(props: CreateMoviePropertiesInterface) {
+        this.id = props.id;
+        this.title = props.title;
+        this.year = String(props.year);
+        this.runtime = String(props.runtime);
+        this.director = props.director;
+        this.genres = props.genres;
+        if (props.actors) {
+            this.actors = props.actors;
+        }
+        if (props.plot) {
+            this.plot = props.plot;
+        }
+        if (props.posterUrl) {
+            this.posterUrl = props.posterUrl;
+        }
     }
 
     public getId(): number {
@@ -38,11 +48,11 @@ export class Movie {
         return this.title;
     }
 
-    public getYear(): number {
+    public getYear(): string {
         return this.year;
     }
 
-    public getRuntime(): number {
+    public getRuntime(): string {
         return this.runtime;
     }
 
@@ -50,7 +60,7 @@ export class Movie {
         return this.director;
     }
 
-    public getGenres(): Array<Genre> {
+    public getGenres(): string[] {
         return this.genres;
     }
 
@@ -65,6 +75,4 @@ export class Movie {
     public getPosterUrl(): string | undefined {
         return this.posterUrl;
     }
-
-    // TODO put methods for the logic from part 2. of the task
 }
