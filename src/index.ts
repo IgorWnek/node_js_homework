@@ -8,6 +8,7 @@ import {AddMovieUseCase} from "./application/use-case/AddMovieUseCase";
 import MovieRepository from "./infrastructure/data-layer/repository/MovieRepository";
 import {MovieJSONDataSource} from "./infrastructure/data-layer/data-source/MovieJSONDataSource";
 import {FileJsonDatabase} from "./infrastructure/data-layer/data-source/database/FileJsonDatabase";
+import {GetFilteredMoviesUseCase} from "./application/use-case/GetFilteredMoviesUseCase";
 
 dotenv.config();
 
@@ -19,14 +20,16 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 const DB_FILE_PATH = process.env.DB_FILE_PATH || __dirname + '/../data/db.json';
-const moviesRouter = MoviesRouter(
-    new AddMovieUseCase(
-        new MovieRepository(
-            new MovieJSONDataSource(
-                new FileJsonDatabase(DB_FILE_PATH)
-            )
-        )
+
+let movieRepository = new MovieRepository(
+    new MovieJSONDataSource(
+        new FileJsonDatabase(DB_FILE_PATH)
     )
+);
+
+const moviesRouter = MoviesRouter(
+    new AddMovieUseCase(movieRepository),
+    new GetFilteredMoviesUseCase(movieRepository)
 );
 
 app.use('', moviesRouter);
