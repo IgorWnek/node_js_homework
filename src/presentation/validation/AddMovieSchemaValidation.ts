@@ -1,5 +1,6 @@
 import {Schema} from "express-validator";
 
+// TODO Add custom validation for genres to validate against those from DB
 export const addMovieValidationSchema: Schema = {
     title: {
         in: ['body'],

@@ -24,6 +24,7 @@ const availableGenres = [
     "Sport"
 ];
 
+// TODO Add custom validation for genres to validate against those from DB
 export const getMoviesValidationSchema: Schema = {
     duration: {
         in: ['query'],
