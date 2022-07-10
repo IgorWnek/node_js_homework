@@ -8,6 +8,7 @@ import { addMovieValidationSchema } from "../../../validation/AddMovieSchemaVali
 import { getMoviesValidationSchema } from "../../../validation/GetMoviesSchemaValidation";
 import { MoviesDTO } from "../../../../application/dto/MoviesDTO";
 import { instanceToPlain } from "class-transformer";
+import {GetMoviesDTO} from "../../../../application/dto/GetMoviesDTO";
 
 export default function MoviesRouter (
     addMovieUseCase: AddMovieUseCaseInterface,
@@ -52,7 +53,8 @@ export default function MoviesRouter (
                         .json({ errors: errors.array() });
                 }
 
-                let movies: MoviesDTO = await getMoviesUseCase.execute();
+                const getMoviesDTO = new GetMoviesDTO(req.query);
+                let movies: MoviesDTO = await getMoviesUseCase.execute(getMoviesDTO);
 
                 if (!movies) {
                     return res.status(204);

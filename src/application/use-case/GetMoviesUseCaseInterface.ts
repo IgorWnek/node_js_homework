@@ -1,5 +1,6 @@
-import {MoviesDTO} from "../dto/MoviesDTO";
+import { MoviesDTO } from "../dto/MoviesDTO";
+import { GetMoviesDTO } from "../dto/GetMoviesDTO";
 
 export interface GetMoviesUseCaseInterface {
-    execute(): Promise<MoviesDTO>;
+    execute(getMoviesDTO: GetMoviesDTO): Promise<MoviesDTO>;
 }
