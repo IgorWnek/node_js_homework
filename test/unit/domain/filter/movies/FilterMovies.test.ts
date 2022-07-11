@@ -2,11 +2,14 @@ import {MoviesFilterStrategyInterface} from "../../../../../src/domain/filter/mo
 import {RandomMoviesFilter} from "../../../../../src/domain/filter/movies/RandomMoviesFilter";
 import {FilterMovies} from "../../../../../src/domain/filter/movies/FilterMovies";
 import {Movie} from "../../../../../src/domain/entity/Movie";
+import {DurationMoviesFilter} from "../../../../../src/domain/filter/movies/DurationMoviesFilter";
+import {GetMoviesDTO} from "../../../../../src/application/dto/GetMoviesDTO";
 
 describe("Filter Movies", () => {
     let filterMovieStrategy: MoviesFilterStrategyInterface;
     let filterMovies: FilterMovies;
     let sourceMovies: Movie[];
+    let getMoviesDTO: GetMoviesDTO;
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -16,22 +19,44 @@ describe("Filter Movies", () => {
             new Movie({ id: 3, title: "The Shawshank Redemption", year: 1994, runtime: 142, director: "Frank Darabont", genres: ["Crime", "Drama"], actors: "Tim Robbins, Morgan Freeman, Bob Gunton, William Sadler", plot: "Two imprisoned men bond over a number of years, finding solace and eventual redemption through acts of common decency.", posterUrl: "https://images-na.ssl-images-amazon.com/images/M/MV5BODU4MjU4NjIwNl5BMl5BanBnXkFtZTgwMDU2MjEyMDE@._V1_SX300.jpg" })
         ];
         filterMovies = new FilterMovies();
+        getMoviesDTO = new GetMoviesDTO({});
     })
 
     describe("filter", () => {
         it("should throw an error if filter strategy is not set first", async () => {
-            await expect(filterMovies.filter(sourceMovies)).rejects.toThrowError();
+            await expect(filterMovies.filter(sourceMovies, getMoviesDTO))
+                .rejects
+                .toThrowError();
         });
         describe("with random movie filter strategy", () => {
             it("should return array with random Movie entity", async () => {
                 filterMovieStrategy = new RandomMoviesFilter();
                 filterMovies.setFilterStrategy(filterMovieStrategy);
-                const resultMovies = await filterMovies.filter(sourceMovies);
+                const resultMovies = await filterMovies.filter(sourceMovies, getMoviesDTO);
                 const resultMovie = resultMovies[0];
 
                 expect(resultMovies.length).toBe(1);
                 expect(resultMovie).toBeInstanceOf(Movie);
             });
+        })
+        describe("with duration movies filter strategy", () => {
+            it("should return array filtered by duration with tolerance", async () => {
+                filterMovieStrategy = new DurationMoviesFilter();
+                filterMovies.setFilterStrategy(filterMovieStrategy);
+                getMoviesDTO.duration = 120;
+                const resultMovies = await filterMovies.filter(sourceMovies, getMoviesDTO);
+
+                expect(resultMovies.length).toBe(1);
+                expect(resultMovies[0].getId()).toBe(2);
+                expect(Number(resultMovies[0].getRuntime())).toBe(127);
+            })
+            it("should throw an error if duration is not passed with GetMoviesDTO", async () => {
+                filterMovieStrategy = new DurationMoviesFilter();
+                filterMovies.setFilterStrategy(filterMovieStrategy);
+                await expect(filterMovies.filter(sourceMovies, getMoviesDTO))
+                    .rejects
+                    .toThrowError();
+            })
         })
     })
 })
