@@ -6,6 +6,7 @@ import { Movie } from "../../domain/entity/Movie";
 import { GetMoviesDTO } from "../dto/GetMoviesDTO";
 import {FilterMoviesInterface} from "../../domain/filter/movies/FilterMoviesInterface";
 import {RandomMoviesFilter} from "../../domain/filter/movies/RandomMoviesFilter";
+import {DurationMoviesFilter} from "../../domain/filter/movies/DurationMoviesFilter";
 
 export class GetFilteredMoviesUseCase implements GetMoviesUseCaseInterface{
     movieRepository: MovieRepositoryInterface;
@@ -28,7 +29,14 @@ export class GetFilteredMoviesUseCase implements GetMoviesUseCaseInterface{
 
         if (!getMoviesDTO.genres && !getMoviesDTO.duration) {
             await this.filterMovies.setFilterStrategy(new RandomMoviesFilter());
-            movies = await this.filterMovies.filter(movies);
+            movies = await this.filterMovies.filter(movies, getMoviesDTO);
+        }
+
+        if (!getMoviesDTO.genres && getMoviesDTO.duration) {
+            await this.filterMovies.setFilterStrategy(new DurationMoviesFilter());
+            movies = await this.filterMovies.filter(movies, getMoviesDTO);
+            await this.filterMovies.setFilterStrategy(new RandomMoviesFilter());
+            movies = await this.filterMovies.filter(movies, getMoviesDTO);
         }
 
         await Promise.all(movies.map(async (movie: Movie) => {
