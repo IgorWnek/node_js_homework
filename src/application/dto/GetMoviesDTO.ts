@@ -9,7 +9,7 @@ export class GetMoviesDTO {
 
     public constructor(props: GetMoviesDTOPropsInterface) {
         if (props.duration) {
-            this.duration = props.duration;
+            this.duration = Number(props.duration);
         }
         if (props.genres) {
             this.genres = props.genres;

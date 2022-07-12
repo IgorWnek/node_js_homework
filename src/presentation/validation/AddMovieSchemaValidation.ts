@@ -1,5 +1,29 @@
 import {Schema} from "express-validator";
 
+const availableGenres = [
+    "Comedy",
+    "Fantasy",
+    "Crime",
+    "Drama",
+    "Music",
+    "Adventure",
+    "History",
+    "Thriller",
+    "Animation",
+    "Family",
+    "Mystery",
+    "Biography",
+    "Action",
+    "Film-Noir",
+    "Romance",
+    "Sci-Fi",
+    "War",
+    "Western",
+    "Horror",
+    "Musical",
+    "Sport"
+];
+
 // TODO Add custom validation for genres to validate against those from DB
 export const addMovieValidationSchema: Schema = {
     title: {
@@ -27,30 +51,22 @@ export const addMovieValidationSchema: Schema = {
     genres: {
         in: ['body'],
         exists: { errorMessage: 'Genres is required field' },
-        isArray: { options: { min: 1 }, errorMessage: 'At least one genre must be specified' },
-        isIn: { options: [
-            "Comedy",
-            "Fantasy",
-            "Crime",
-            "Drama",
-            "Music",
-            "Adventure",
-            "History",
-            "Thriller",
-            "Animation",
-            "Family",
-            "Mystery",
-            "Biography",
-            "Action",
-            "Film-Noir",
-            "Romance",
-            "Sci-Fi",
-            "War",
-            "Western",
-            "Horror",
-            "Musical",
-            "Sport"
-        ] }
+        isArray: {
+            bail: true,
+            options: { min: 1 },
+            errorMessage: 'At least one genre must be specified'
+        },
+        custom: {
+            options: (genres) => {
+                for (const genre of genres) {
+                    if (!availableGenres.includes(genre)) {
+                        return false;
+                    }
+                }
+                return true;
+            },
+            errorMessage: 'Genre must be one of the available genres: ' + availableGenres.join(', ')
+        },
     },
     actors: {
         in: ['body'],

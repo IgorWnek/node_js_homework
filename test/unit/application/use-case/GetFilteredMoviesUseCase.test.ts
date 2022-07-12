@@ -7,6 +7,9 @@ import {FilterMoviesInterface} from "../../../../src/domain/filter/movies/Filter
 import {FilterMovies} from "../../../../src/domain/filter/movies/FilterMovies";
 import {GetMoviesUseCaseInterface} from "../../../../src/application/use-case/GetMoviesUseCaseInterface";
 import {GetMoviesDTO} from "../../../../src/application/dto/GetMoviesDTO";
+import {OrderMoviesInterface} from "../../../../src/domain/order/movies/OrderMoviesInterface";
+import {OrderMovies} from "../../../../src/domain/order/movies/OrderMovies";
+import mock = jest.mock;
 
 describe("Get Filtered Movies Use Case", () => {
     class MockMovieRepository implements MovieRepositoryInterface {
@@ -21,6 +24,7 @@ describe("Get Filtered Movies Use Case", () => {
     let mockMovieRepository: MockMovieRepository;
     let sourceMovies: Movie[];
     let filterMovies: FilterMoviesInterface;
+    let orderMovies: OrderMoviesInterface;
     let getMoviesUseCase: GetMoviesUseCaseInterface;
     let getMoviesDTO: GetMoviesDTO;
 
@@ -28,7 +32,12 @@ describe("Get Filtered Movies Use Case", () => {
         jest.clearAllMocks();
         mockMovieRepository = new MockMovieRepository();
         filterMovies = new FilterMovies();
-        getMoviesUseCase = new GetFilteredMoviesUseCase(mockMovieRepository, filterMovies);
+        orderMovies = new OrderMovies();
+        getMoviesUseCase = new GetFilteredMoviesUseCase(
+            mockMovieRepository,
+            filterMovies,
+            orderMovies
+            );
         sourceMovies = [
             new Movie({ id: 1, title: "Beetlejuice", year: 1988, runtime: 92, director: "Tim Burton", genres: ["Comedy", "Fantasy"], actors: "Alec Baldwin, Geena Davis, Annie McEnroe, Maurice Page", plot: "A couple of recently deceased ghosts contract the services of a \"bio-exorcist\" in order to remove the obnoxious new owners of their house.", posterUrl: "https://images-na.ssl-images-amazon.com/images/M/MV5BMTUwODE3MDE0MV5BMl5BanBnXkFtZTgwNTk1MjI4MzE@._V1_SX300.jpg" }),
             new Movie({ id: 2, title: "The Cotton Club", year: 1984, runtime: 127, director: "Francis Ford Coppola", genres: ["Crime", "Drama", "Music"], actors: "Richard Gere, Gregory Hines, Diane Lane, Lonette McKee", plot: "The Cotton Club was a famous night club in Harlem. The story follows the people that visited the club, those that ran it, and is peppered with the Jazz music that made it so famous.", posterUrl: "https://images-na.ssl-images-amazon.com/images/M/MV5BMTU5ODAyNzA4OV5BMl5BanBnXkFtZTcwNzYwNTIzNA@@._V1_SX300.jpg" }),
@@ -76,6 +85,36 @@ describe("Get Filtered Movies Use Case", () => {
             expect(resultMoviesDTO.movies.length).toBe(1);
             expect(resultMoviesDTO.movies[0]).toBeInstanceOf(MovieDTO);
             expect(expectedMoviesIds).toContain(resultMoviesDTO.movies[0].id);
+        })
+    })
+
+    describe("execute with GetMoviesDTO with genres parameter only", () => {
+        it("should return Movies array filtered and ordered (descending) by genres", async () => {
+            jest.spyOn(mockMovieRepository, "fetchAll")
+                .mockImplementation(() => Promise.resolve(sourceMovies));
+            getMoviesDTO = new GetMoviesDTO({ genres: ["Crime", "Drama", "Music"] });
+            const resultMoviesDTO = await getMoviesUseCase.execute(getMoviesDTO);
+
+            expect(resultMoviesDTO.movies.length).toBe(3);
+            expect(resultMoviesDTO.movies[0].id).toBe(2);
+            expect(resultMoviesDTO.movies[1].id).toBe(3);
+            expect(resultMoviesDTO.movies[2].id).toBe(5);
+        })
+    })
+
+    describe("execute with GetMoviesDTO with both genres and duration parameters passed", () => {
+        it("should return Movies array filtered by duration and genres and descending ordered by genres", async () => {
+            jest.spyOn(mockMovieRepository, "fetchAll")
+                .mockImplementation(() => Promise.resolve(sourceMovies));
+            getMoviesDTO = new GetMoviesDTO({
+                duration: 120,
+                genres: ["Crime", "Drama", "Music"]
+            });
+            const resultMoviesDTO = await getMoviesUseCase.execute(getMoviesDTO);
+
+            expect(resultMoviesDTO.movies.length).toBe(2);
+            expect(resultMoviesDTO.movies[0].id).toBe(2);
+            expect(resultMoviesDTO.movies[1].id).toBe(5);
         })
     })
 })

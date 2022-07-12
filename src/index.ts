@@ -10,6 +10,7 @@ import {MovieJSONDataSource} from "./infrastructure/data-layer/data-source/Movie
 import {FileJsonDatabase} from "./infrastructure/data-layer/data-source/database/FileJsonDatabase";
 import {GetFilteredMoviesUseCase} from "./application/use-case/GetFilteredMoviesUseCase";
 import {FilterMovies} from "./domain/filter/movies/FilterMovies";
+import {OrderMovies} from "./domain/order/movies/OrderMovies";
 
 dotenv.config();
 
@@ -30,7 +31,11 @@ let movieRepository = new MovieRepository(
 
 const moviesRouter = MoviesRouter(
     new AddMovieUseCase(movieRepository),
-    new GetFilteredMoviesUseCase(movieRepository, new FilterMovies())
+    new GetFilteredMoviesUseCase(
+        movieRepository,
+        new FilterMovies(),
+        new OrderMovies()
+    )
 );
 
 app.use('', moviesRouter);
