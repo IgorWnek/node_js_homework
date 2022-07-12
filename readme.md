@@ -124,8 +124,10 @@ ____
 
 ### What could be done more?
 
-#### 1. Docker development environment.
+#### 1. Improve endpoints docs section to show examples of requests and possible responses.
 
-#### 2. Custom validation for genres in router's validation schemas that read allowed genres from json database file.
+#### 2. Docker development environment.
 
-#### 3. Validation during inserting to DB to prevent duplication in db.json (possibly by checking title and year to make them "primary key"-like).
+#### 3. Custom validation for genres in router's validation schemas that read allowed genres from json database file.
+
+#### 4. Validation during inserting to DB to prevent duplication in db.json (possibly by checking title and year to make them "primary key"-like).
