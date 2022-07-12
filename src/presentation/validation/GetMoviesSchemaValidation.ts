@@ -34,9 +34,22 @@ export const getMoviesValidationSchema: Schema = {
     genres: {
         in: ['query'],
         optional: true,
-        isArray: { errorMessage: 'Genres field must be an array' },
-        isIn: { options: availableGenres,
+        isArray: {
+            bail: true,
+            options: {
+                min: 1
+            },
+            errorMessage: 'Genres field must be an array' },
+        custom: {
+            options: (genres) => {
+                for (const genre of genres) {
+                    if (!availableGenres.includes(genre)) {
+                        return false;
+                    }
+                }
+                return true;
+            },
             errorMessage: 'Genre must be one of the available genres: ' + availableGenres.join(', ')
-        }
+        },
     }
 }

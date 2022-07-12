@@ -8,7 +8,7 @@ import { addMovieValidationSchema } from "../../../validation/AddMovieSchemaVali
 import { getMoviesValidationSchema } from "../../../validation/GetMoviesSchemaValidation";
 import { MoviesDTO } from "../../../../application/dto/MoviesDTO";
 import { instanceToPlain } from "class-transformer";
-import {GetMoviesDTO} from "../../../../application/dto/GetMoviesDTO";
+import { GetMoviesDTO } from "../../../../application/dto/GetMoviesDTO";
 
 export default function MoviesRouter (
     addMovieUseCase: AddMovieUseCaseInterface,

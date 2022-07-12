@@ -7,14 +7,22 @@ import { GetMoviesDTO } from "../dto/GetMoviesDTO";
 import {FilterMoviesInterface} from "../../domain/filter/movies/FilterMoviesInterface";
 import {RandomMoviesFilter} from "../../domain/filter/movies/RandomMoviesFilter";
 import {DurationMoviesFilter} from "../../domain/filter/movies/DurationMoviesFilter";
+import {OrderMoviesInterface} from "../../domain/order/movies/OrderMoviesInterface";
+import {GenresMoviesFilter} from "../../domain/filter/movies/GenresMoviesFilter";
 
 export class GetFilteredMoviesUseCase implements GetMoviesUseCaseInterface{
     movieRepository: MovieRepositoryInterface;
     filterMovies: FilterMoviesInterface;
+    orderMovies: OrderMoviesInterface;
 
-    public constructor(movieRepository: MovieRepositoryInterface, filterMovies: FilterMoviesInterface ) {
+    public constructor(
+        movieRepository: MovieRepositoryInterface,
+        filterMovies: FilterMoviesInterface,
+        orderMovies: OrderMoviesInterface
+    ) {
         this.movieRepository = movieRepository;
         this.filterMovies = filterMovies;
+        this.orderMovies = orderMovies;
     }
 
     async execute(getMoviesDTO: GetMoviesDTO): Promise<MoviesDTO> {
@@ -37,6 +45,20 @@ export class GetFilteredMoviesUseCase implements GetMoviesUseCaseInterface{
             movies = await this.filterMovies.filter(movies, getMoviesDTO);
             await this.filterMovies.setFilterStrategy(new RandomMoviesFilter());
             movies = await this.filterMovies.filter(movies, getMoviesDTO);
+        }
+
+        if (!getMoviesDTO.duration && getMoviesDTO.genres) {
+            await this.filterMovies.setFilterStrategy(new GenresMoviesFilter());
+            movies = await this.filterMovies.filter(movies, getMoviesDTO);
+            movies = await this.orderMovies.order(movies, getMoviesDTO);
+        }
+
+        if (getMoviesDTO.duration && getMoviesDTO.genres) {
+            await this.filterMovies.setFilterStrategy(new DurationMoviesFilter());
+            movies = await this.filterMovies.filter(movies, getMoviesDTO);
+            await this.filterMovies.setFilterStrategy(new GenresMoviesFilter());
+            movies = await this.filterMovies.filter(movies, getMoviesDTO);
+            movies = await this.orderMovies.order(movies, getMoviesDTO);
         }
 
         await Promise.all(movies.map(async (movie: Movie) => {
