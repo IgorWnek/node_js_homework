@@ -46,3 +46,86 @@ In any of those cases we don't want to have duplicates.
 **Remember about proper error handling**
 
 **We require code in git repository**
+
+## Solution
+
+### Run the script
+
+#### Safest environment to run script requires:
+
+- Node.js v16.14.2
+- npm v8.13.2
+
+#### To run script in development mode with --inspect (allowing debug) run:
+
+    npm run serve
+
+#### To run tests (Jest):
+
+    npm test
+
+### Endpoints docs
+
+**Add movie**
+____
+  Add new movie to json file database.
+
+* **URL**
+
+  /movies
+
+* **Method:**
+
+  `POST`
+
+* **Request body params**
+
+  **Required:**
+
+    `genres = string[]`
+
+    `title = string, max 255 characters`
+
+    `year = number`
+
+    `runtime = number`
+
+    `director = string, max 255 characters`
+
+  **Optional:**
+
+    `actors = string`
+
+    `plot = string`
+
+    `posterUrl = string`
+
+**Get movies**
+
+----
+  Get movies from json file database.
+  Endpoint behaviour is like requested in 2. of TODOs.
+
+* **URL**
+
+  /movies
+
+* **Method**
+
+    `GET`
+
+* **URL Params**
+
+  **Optional**
+
+    `duration = number`
+
+    `genres = string[]`
+
+### What could be done more?
+
+#### 1. Docker development environment.
+
+#### 2. Custom validation for genres in router's validation schemas that read allowed genres from json database file.
+
+#### 3. Validation during inserting to DB to prevent duplication in db.json (possibly by checking title and year to make them "primary key"-like).
